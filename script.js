@@ -80,7 +80,7 @@ if (document.location.search[0] = '?') {
             response_type: 'code',
             revoke: 1
         }
-
+        console.log(authorizationParametr)
         window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
     }
 }
