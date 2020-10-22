@@ -1,22 +1,6 @@
 // const access_token = '98973b86d1e66c39c3b486ba26ff200346f0fff93326b2d92ebc8b0fd40ad71686ee3b57b75609f66980b'
 
-async function request(method = '', parametrs = {}) {
-    const token = 'access_token=86e4534556363a7aeff5655b33fd826432b25495c7bf74fea94dacfab56fbf6d47cf650d32db1497f7882'
-    const version = 'v=5.52'
-    const url = `https://api.vk.com/method/${method}?${token}&${version}${parametrs.toStringForURL()}`
 
-    try {
-        const response = await fetch(url)
-        const data = await response.json()
-        if (data.error) {
-            throw new Error(data.error.error_msg)
-        } else {
-            return data.response
-        }
-    } catch (error) {
-        console.log(error.message)
-    }
-}
 
 async function getNumberOfFriends() {
     const response = await request('friends.search')
@@ -49,15 +33,13 @@ function drawFriends(friends) {
     })
 }
 
-function getURLString(protocolAddressPath, parametrs) {
-    return `${protocolAddressPath}?${parametrs.toStringForURL()}`
+Object.prototype.toStringURLParameters = function () {
+    const keys = Object.keys(this)
+    return keys.map(key => `${key}=${typeof this[key] == 'object' ? this[key].join() : this[key]}`).join('&')
 }
 
-
-
-
-
 function addScript(src) {
+    console.log(src)
     var elem = document.createElement('script')
     elem.src = src
     document.head.appendChild(elem)
@@ -66,32 +48,55 @@ function addScript(src) {
     }
 }
 
-// function response(data) {
-//     console.log(data)
-// }
-
-// addScript(getURLString('https://api.vk.com/method/friends.get', parametrs))
-
-Object.prototype.toStringURLParameters = function () {
-    const keys = Object.keys(this)
-    return keys.map(key => `${key}=${typeof this[key] == 'object' ? this[key].join() : this[key]}`).join('&')
+function response(data) {
+    console.log(data)
 }
 
+async function request(method = '', parametrs = {}) {
+    const token = 'access_token=b1f4136fdd0cbf2a0b750066a59707654a0a361df1b33fa6a98e2b459e806a341d6b8c05b1db38481c3a4'
+    const version = 'v=5.52'
+    const url = `https://api.vk.com/method/${method}?${token}&${version}${parametrs.toStringURLParameters()}`
 
-
-if (document.location.search[0] = '?') {
-    let parametrs = document.location.search.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === 'code')
-    if (parametrs) {
-        console.log('success')
-    } else {
-        const authorizationParametr = {
-            client_id:  7636014,
-            redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
-            display: 'popup',
-            scope: 'friends',
-            revoke: 1
-        }
-
-        window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
+    try {
+        const response = await fetch(url, {
+            headers: {
+                
+            }
+        })
+        // const data = await response.json()
+        // if (data.error) {
+        //     throw new Error(data.error.error_msg)
+        // } else {
+        //     return data.response
+        // }
+        return response
+    } catch (error) {
+        console.log(error.message)
     }
 }
+request('friends.get').then(response => console.log(response))
+const access_token = 'b1f4136fdd0cbf2a0b750066a59707654a0a361df1b33fa6a98e2b459e806a341d6b8c05b1db38481c3a4'
+
+// addScript('https://api.vk.com/method/friends.get?' + {
+//     access_token,
+//     v: 5.52,
+//     callback: 'response'
+// }.toStringURLParameters())
+
+
+// if (document.location.search[0] = '?') {
+//     let parametrs = document.location.search.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === 'code')
+//     if (parametrs) {
+//         console.log('success')
+//     } else {
+//         const authorizationParametr = {
+//             client_id:  7636014,
+//             redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
+//             display: 'popup',
+//             scope: 'friends',
+//             revoke: 1
+//         }
+
+//         window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
+//     }
+// }
