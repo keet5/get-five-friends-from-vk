@@ -65,21 +65,22 @@ const request = (function () {
 // request('friends.get', { access_token, count: 10 }).then(response => console.log(response))
 // request('friends.get', { access_token, count: 5 }).then(response => console.log(response))
 
-if (document.location.search[0] = '?') {
-    let access_token = document.location.search.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === 'access_token')
-    console.log(access_token)
-    if (access_token) {
-        request('friends.get', {  count: 10, access_token: access_token[1] }).then(response => console.log(response))
-    } 
-    // else {
-    //     const authorizationParametr = {
-    //         client_id:  7636014,
-    //         redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
-    //         display: 'popup',
-    //         scope: 'friends',
-    //         response_type: 'token',
-    //         revoke: 1
-    //     }
-    //     window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
-    // }
+
+let access_token = document.location.search.split('&').map(i => i.split('=')).find(([key, _]) => key === 'access_token')
+if (access_token) {
+    request('friends.get', { count: 10, access_token: access_token[1] }).then(response => console.log(response))
 }
+else {
+    const authorizationParametr = {
+        client_id: 7636014,
+        redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
+        display: 'popup',
+        scope: 'friends',
+        response_type: 'token',
+        revoke: 1
+    }
+    window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
+}
+
+
+
