@@ -77,6 +77,7 @@ if (document.location.search[0] = '?') {
             redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
             display: 'popup',
             scope: 'friends',
+            response_type: 'code',
             revoke: 1
         }
 
