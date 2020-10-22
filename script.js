@@ -79,7 +79,7 @@ else {
         response_type: 'token',
         revoke: 1
     }
-    window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
+    // window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
 }
 
 
