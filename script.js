@@ -92,6 +92,6 @@ if (document.location.search[0] = '?') {
             revoke: 1
         }
 
-        window.location.replace('https://oauth.vk.com/authorize?' + parametrs.toStringURLParameters())
+        window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
     }
 }
