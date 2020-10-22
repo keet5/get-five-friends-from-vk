@@ -47,7 +47,6 @@ const request = (function () {
         parametrs['callback'] = 'response' + id
 
         const src = `https://api.vk.com/method/${method}?${parametrs.toStringURLParameters()}`
-        console.log(src)
         return new Promise((resolve, reject) => {
             window['response' + id] = function (data) {
                 resolve(data)
@@ -67,20 +66,18 @@ const request = (function () {
 // request('friends.get', { access_token, count: 5 }).then(response => console.log(response))
 
 if (document.location.search[0] = '?') {
-    let code = document.location.search.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === 'code')
-    if (code) {
-        console.log(code)
-        request('friends.get', {  count: 10, access_token: code[1] }).then(response => console.log(response))
+    let access_token = document.location.search.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === 'code')
+    if (access_token) {
+        request('friends.get', {  count: 10, access_token }).then(response => console.log(response))
     } else {
         const authorizationParametr = {
             client_id:  7636014,
             redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
             display: 'popup',
             scope: 'friends',
-            response_type: 'code',
+            response_type: 'token',
             revoke: 1
         }
-        console.log(authorizationParametr)
         window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
     }
 }
