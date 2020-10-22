@@ -18,11 +18,6 @@ async function request(method = '', parametrs = {}) {
     }
 }
 
-Object.prototype.toStringForURL = function () {
-    const keys = Object.keys(this)
-    return keys.map(key => `&${key}=${typeof this[key] == 'object' ? this[key].join() : this[key]}`).join('')
-}
-
 async function getNumberOfFriends() {
     const response = await request('friends.search')
     return response.count
@@ -60,11 +55,6 @@ function getURLString(protocolAddressPath, parametrs) {
 
 
 
-const parametrs = {
-    access_token: '86e4534556363a7aeff5655b33fd826432b25495c7bf74fea94dacfab56fbf6d47cf650d32db1497f7882',
-    v: 5.52,
-    callback: 'response'
-}
 
 
 function addScript(src) {
@@ -76,8 +66,32 @@ function addScript(src) {
     }
 }
 
-function response(data) {
-    console.log(data)
+// function response(data) {
+//     console.log(data)
+// }
+
+// addScript(getURLString('https://api.vk.com/method/friends.get', parametrs))
+
+Object.prototype.toStringURLParameters = function () {
+    const keys = Object.keys(this)
+    return keys.map(key => `${key}=${typeof this[key] == 'object' ? this[key].join() : this[key]}`).join('&')
 }
 
-addScript(getURLString('https://api.vk.com/method/friends.get', parametrs))
+
+
+if (document.location.search[0] = '?') {
+    let parametrs = document.location.search.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === 'code')
+    if (parametrs) {
+        console.log('success')
+    } else {
+        const authorizationParametr = {
+            client_id:  7636014,
+            redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
+            display: 'popup',
+            scope: 'friends',
+            revoke: 1
+        }
+
+        window.location.replace('https://oauth.vk.com/authorize?' + parametrs.toStringURLParameters())
+    }
+}
