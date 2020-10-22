@@ -1,7 +1,7 @@
 // const access_token = '98973b86d1e66c39c3b486ba26ff200346f0fff93326b2d92ebc8b0fd40ad71686ee3b57b75609f66980b'
 
 async function request(method = '', parametrs = {}) {
-    const token = 'access_token=98973b86d1e66c39c3b486ba26ff200346f0fff93326b2d92ebc8b0fd40ad71686ee3b57b75609f66980b'
+    const token = 'access_token=86e4534556363a7aeff5655b33fd826432b25495c7bf74fea94dacfab56fbf6d47cf650d32db1497f7882'
     const version = 'v=5.52'
     const url = `https://api.vk.com/method/${method}?${token}&${version}${parametrs.toStringForURL()}`
 
@@ -43,7 +43,7 @@ function drawFriends(friends) {
     friends.forEach(i => {
         const li = document.createElement('li')
         let img = document.createElement('img')
-       
+
         li.textContent = `${i['first_name']} ${i['last_name']}`
         img.setAttribute('src', i['photo_50'])
         li.appendChild(img)
@@ -54,13 +54,30 @@ function drawFriends(friends) {
     })
 }
 
-
-getFiveRandomFriends().then(data => drawFriends(data))
-
-
-
+function getURLString(protocolAddressPath, parametrs) {
+    return `${protocolAddressPath}?${parametrs.toStringForURL()}`
+}
 
 
 
+const parametrs = {
+    access_token: '86e4534556363a7aeff5655b33fd826432b25495c7bf74fea94dacfab56fbf6d47cf650d32db1497f7882',
+    v: 5.52,
+    callback: 'response'
+}
 
 
+function addScript(src) {
+    var elem = document.createElement('script')
+    elem.src = src
+    document.head.appendChild(elem)
+    elem.onload = function () {
+        elem.remove()
+    }
+}
+
+function response(data) {
+    console.log(data)
+}
+
+addScript(getURLString('https://api.vk.com/method/friends.get', parametrs))
