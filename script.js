@@ -66,7 +66,8 @@ const request = (function () {
 // request('friends.get', { access_token, count: 5 }).then(response => console.log(response))
 
 if (document.location.search[0] = '?') {
-    let access_token = document.location.search.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === 'code')
+    let access_token = document.location.search.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === 'access_token')
+    access_token = access_token[1]
     if (access_token) {
         request('friends.get', {  count: 10, access_token }).then(response => console.log(response))
     } else {
