@@ -47,6 +47,7 @@ const request = (function () {
         parametrs['callback'] = 'response' + id
 
         const src = `https://api.vk.com/method/${method}?${parametrs.toStringURLParameters()}`
+        console.log(src)
         return new Promise((resolve, reject) => {
             window['response' + id] = function (data) {
                 resolve(data)
@@ -68,6 +69,7 @@ const request = (function () {
 
 let access_token = document.location.hash.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === '#access_token')
 if (access_token) {
+    console.log(access_token)
     request('friends.get', { count: 10, access_token: access_token[1] }).then(response => console.log(response))
 }
 else {
@@ -79,7 +81,7 @@ else {
         response_type: 'token',
         revoke: 1
     }
-    window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
+    // window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
 }
 
 
