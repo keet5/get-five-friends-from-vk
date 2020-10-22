@@ -67,9 +67,9 @@ const request = (function () {
 
 if (document.location.search[0] = '?') {
     let access_token = document.location.search.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === 'access_token')
-    access_token = access_token[1]
+
     if (access_token) {
-        request('friends.get', {  count: 10, access_token }).then(response => console.log(response))
+        request('friends.get', {  count: 10, access_token: access_token[1] }).then(response => console.log(response))
     } else {
         const authorizationParametr = {
             client_id:  7636014,
