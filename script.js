@@ -47,7 +47,7 @@ const request = (function () {
         parametrs['callback'] = 'response' + id
 
         const src = `https://api.vk.com/method/${method}?${parametrs.toStringURLParameters()}`
-       
+        console.log(src)
         return new Promise((resolve, reject) => {
             window['response' + id] = function (data) {
                 resolve(data)
