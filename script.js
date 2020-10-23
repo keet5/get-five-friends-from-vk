@@ -67,7 +67,8 @@ const request = (function () {
 // request('friends.get', { access_token, count: 5 }).then(response => console.log(response))
 
 
-let access_token = document.location.hash.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === '#access_token')
+let access_token = document.location.hash.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === 'access_token')
+
 if (access_token) {
     console.log(access_token)
     request('friends.get', { count: 10, access_token: access_token[1] }).then(response => console.log(response))
@@ -81,7 +82,7 @@ else {
         response_type: 'token',
         revoke: 1
     }
-    // window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
+    window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
 }
 
 
