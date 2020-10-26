@@ -131,7 +131,8 @@ export default {
             display: 'popup',
             scope: 'friends',
             response_type: 'token',
-            v: 5.52
+            v: 5.52,
+            revoke: 1
         })
     }
 }
