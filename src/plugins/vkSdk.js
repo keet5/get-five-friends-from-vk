@@ -1,6 +1,6 @@
 export default {
     install: (app, options) => {
-        let access_token
+        let access_token = 'ad149b9da5efd79778c9efdda74035af0e23d6602f8907134fa980ac0c8accc481a2675b0b80a8a20d0ed'
 
         function objToURLParam(obj) {
             const keys = Object.keys(obj)
@@ -135,3 +135,7 @@ export default {
         })
     }
 }
+
+
+// #access_token=91df76ae41e01546a2f34f02fe883de24dc3ea4b0e3251f91cb919d0160ee3c3e8ef6074612863ae8e061&expires_in=86400&user_id=155499581
+// #access_token=ad149b9da5efd79778c9efdda74035af0e23d6602f8907134fa980ac0c8accc481a2675b0b80a8a20d0ed&expires_in=86400&user_id=155499581
