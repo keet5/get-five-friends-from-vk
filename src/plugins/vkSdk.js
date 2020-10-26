@@ -17,7 +17,7 @@ export default {
                 parametrs.access_token = access_token
 
                 const src = `https://api.vk.com/method/${method}?${objToURLParam(parametrs)}`
-
+                console.log(access_token)
                 return new Promise((resolve, reject) => {
                     window['response' + id] = function (data) {
 
@@ -95,6 +95,7 @@ export default {
 
         app.config.globalProperties.$getUsers = async () => {
             try {
+                
                 return await getUsers()
             } catch (error) {
                 console.log(error)
