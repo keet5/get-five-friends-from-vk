@@ -4,22 +4,21 @@ export default {
             try {
                 return await getUsers()
             } catch (error) {
-                console.log(error)
                 if (error.error_code == 5) {
-
+                    console.log(1)
                     if ((access_token = localStorage.getItem('access_token')) &&
                         (friends = await getUsers())
                     ) {
                         return friends
                     }
-
+                    console.log(2)
                     if ((access_token = document.location.hash
                         .slice(1)
                         .split('&')
                         .map(i => i.split('='))
-                        .find(([key, _]) => key === 'access_token') &&
+                        .find(([key, _]) => key === 'access_token')) &&
                         (access_token = access_token[1]) &&
-                        (friends = await getUsers()))
+                        (friends = await getUsers())
                     ) {
                         localStorage.setItem('access_token', access_token)
                         return friends
