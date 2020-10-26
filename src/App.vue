@@ -32,6 +32,7 @@ export default {
     },
 
     async created() {
+        console.log('test travis')
         this.users = await this.$getUsers()
     },
 };
