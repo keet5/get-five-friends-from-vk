@@ -90,7 +90,7 @@ export default {
         }
 
         async function getUsers() {
-            return [await getOwner(), ... (await getFriends())]
+            return [ ... (await getFriends())]
         }
 
         app.config.globalProperties.$getUsers = async () => {
@@ -126,7 +126,6 @@ export default {
                 } else {
                     throw new Error('🤷‍♂️')
                 }
-
             }
         }
 
