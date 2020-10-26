@@ -4,7 +4,6 @@ export default {
             try {
                 return await getUsers()
             } catch (error) {
-                console.log(error)
                 if (error.error_code == 5) {
 
                     if ((access_token = localStorage.getItem('access_token')) &&
