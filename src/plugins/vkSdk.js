@@ -43,7 +43,7 @@ export default {
     }
 }
 
-let access_token = '47f1947732266b85f3aad991de80c5315b3a7866f6fafab177bcc8a3f4adb383167ff988f61ea95f17d14'
+let access_token
 
 function objToURLParam(obj) {
     const keys = Object.keys(obj)
