@@ -98,7 +98,7 @@ export default {
                 if (access_token)
                     return await getUsers()
                 else 
-                    throw { error: {error_code: 5}}
+                    throw {error_code: 5}
             } catch (error) {
                 console.log(error, access_token)
                 if (error.error_code == 5) {
