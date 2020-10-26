@@ -109,15 +109,16 @@ export default {
                         (friends = await getUsers())
                     ) {
                         console.log('access_token hash:', access_token)
-                        localStorage.setItem('access_token', access_token)
+                        // localStorage.setItem('access_token', access_token)
                         return friends
                     }
 
-                    if ((access_token = localStorage.getItem('access_token')) &&
-                        (friends = await getUsers())
-                    ) {
-                        return friends
-                    }
+                    // if ((access_token = localStorage.getItem('access_token')) &&
+                    //     (friends = await getUsers())
+                    // ) {
+                    //     console.log('access_token hash:', access_token)
+                    //     return friends
+                    // }
 
                     return null
                 } else {
