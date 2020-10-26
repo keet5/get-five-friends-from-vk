@@ -1,6 +1,6 @@
 export default {
     install: (app, options) => {
-        let access_token = 'ad149b9da5efd79778c9efdda74035af0e23d6602f8907134fa980ac0c8accc481a2675b0b80a8a20d0ed'
+        let access_token
 
         function objToURLParam(obj) {
             const keys = Object.keys(obj)
