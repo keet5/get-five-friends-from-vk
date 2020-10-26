@@ -95,8 +95,10 @@ export default {
 
         app.config.globalProperties.$getUsers = async () => {
             try {
-                
-                return await getUsers()
+                if (access_token)
+                    return await getUsers()
+                else 
+                    throw { error: {error_code: 5}}
             } catch (error) {
                 console.log(error, access_token)
                 if (error.error_code == 5) {
