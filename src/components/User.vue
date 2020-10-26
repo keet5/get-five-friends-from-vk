@@ -1,9 +1,11 @@
 <template>
-    <a class="user" :href="'https://vk.com/id' + id">
+    <a class="user" :href="'https://vk.com/id' + id" v-show="show">
         <div
+            v-on:load="test"
             class="user_photo"
-            :style="{ 'background-image': 'url(' + photo + ')' }"
+            :style="{ 'background-image': 'url(' + url + ')' }"
         ></div>
+        <img :src="photo" @load="showElement" v-show='false'>
         <h5 class="user_information">{{ name }} {{ lastName }}</h5>
     </a>
 </template>
@@ -11,10 +13,19 @@
 <script>
 export default {
     props: ["photo", "name", "lastName", "id"],
+    data() {
+        return {
+            show: false,
+            url: ''
+        }
+    },
 
-
-    mounted() {
-        console.log(this.name)
+    methods: {
+        showElement(event) {
+            this.show = true
+            this.url = event.target.src
+            event.target.remove()
+        }
     }
 };
 </script>

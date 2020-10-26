@@ -1,7 +1,7 @@
 <template>
     <header class="header">
         <div class="header_nav">
-            <a class="header_ancor" href="https://vk.com/feed">
+            <a class="header_anchor" href="https://vk.com/feed">
                 <img
                     src="https://vk.com/images/svg_icons/ic_head_logo.svg"
                     alt=""
@@ -10,14 +10,10 @@
         </div>
     </header>
 
-    <div class="owner">
-
+    <div class="users" v-if="users">
+        <User v-for="(information, id) in users" :key="id" :id="id" v-bind="information" />
     </div>
-
-    <div class="friends">
-        <User  :key="owner.id" v-bind="owner" />
-        <User v-for="user in friends" :key="user.id" v-bind="user" />
-    </div>
+    <a :href="$authorizationLink" class="authorization_button" v-else>авторизоваться</a>
 </template>
 
 <script>
@@ -28,16 +24,15 @@ export default {
     components: {
         User,
     },
+
     data() {
         return {
-            friends: [],
-            owner: []
+            users: {}
         };
     },
 
     async created() {
-        this.friends = await this.$getFiveFriends()
-        this.owner = await this.$getOwner()
+        this.users = await this.$getUsers()
     },
 };
 </script>
@@ -64,7 +59,43 @@ body {
     box-sizing: border-box;
 }
 
-.friends {
+.header_anchor {
+    display: block;
+}
+
+.header_anchor:active {
+    padding-top: 1px;
+}
+
+.authorization_button {
+    color: white;
+    background-color: #4a76a8;
+    border: none;
+    border-radius: 4px;
+    padding: 7px 20px 8px;
+    margin:   15px auto;
+    display: block;
+    font-size: 12.5px;
+    font-family: -apple-system,BlinkMacSystemFont,'Roboto','Helvetica Neue',Geneva,"Noto Sans Armenian","Noto Sans Bengali","Noto Sans Cherokee","Noto Sans Devanagari","Noto Sans Ethiopic","Noto Sans Georgian","Noto Sans Hebrew","Noto Sans Kannada","Noto Sans Khmer","Noto Sans Lao","Noto Sans Osmanya","Noto Sans Tamil","Noto Sans Telugu","Noto Sans Thai",sans-serif,arial,Tahoma,verdana;
+    line-height: 15px;
+    display: block;
+    width: 100px;
+    text-align: center;
+    user-select: none;
+  
+    text-decoration: none;
+}
+
+.authorization_button:hover {
+    opacity: .88
+}
+
+.authorization_button:active {
+    opacity: 1;
+    background-color: #4a76a8;
+    padding: 8px 20px 7px;
+}
+.users {
     width: 1305px;
     display: grid;
     margin: auto;
@@ -76,42 +107,42 @@ body {
 }
 
 @media (max-width: 1304px) and (min-width: 1090px) {
-    .friends,
+    .users,
     .header_nav {
         width: 1090px;
     }
 }
 
 @media (max-width: 1089px) and (min-width: 875px) {
-    .friends,
+    .users,
     .header_nav {
         width: 875px;
     }
 }
 
 @media (max-width: 874px) and (min-width: 660px) {
-    .friends,
+    .users,
     .header_nav {
         width: 660px;
     }
 }
 
 @media (max-width: 659px) and (min-width: 445px) {
-    .friends,
+    .users,
     .header_nav {
         width: 445px;
     }
 }
 
 @media (max-width: 444px) and (min-width: 230px) {
-    .friends,
+    .users,
     .header_nav {
         width: 230px;
     }
 }
 
 @media (max-width: 229px) {
-    .friends,
+    .users,
     .header_nav {
         width: 230px;
     }

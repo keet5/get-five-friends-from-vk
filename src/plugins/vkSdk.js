@@ -1,66 +1,78 @@
 export default {
     install: (app, options) => {
-        app.config.globalProperties.$getFiveFriends = async () => {
-            const parametrs = {
-                access_token: options,
-                count: 5,
-                order: 'random',
-                offset: 0,
-                fields: ['photo_200_orig'],
-            }
+        app.config.globalProperties.$getUsers = async () => {
+            try {
+                return await getUsers()
+            } catch (error) {
+                console.log(error)
+                if (error.error_code == 5) {
 
-            let response = await request('friends.get', parametrs)
-            return response.items.map(({ id, first_name, last_name, photo_200_orig }) => ({ id, name: first_name, lastName: last_name, photo: photo_200_orig }))
+                    if ((access_token = localStorage.getItem('access_token')) &&
+                        (friends = await getUsers())
+                    ) {
+                        return friends
+                    }
+
+                    if ((access_token = document.location.hash
+                        .slice(1)
+                        .split('&')
+                        .map(i => i.split('='))
+                        .find(([key, _]) => key === 'access_token') &&
+                        (access_token = access_token[1]) &&
+                        (friends = await getUsers()))
+                    ) {
+                        localStorage.setItem('access_token', access_token)
+                        return friends
+                    }
+
+                    return null
+                } else {
+                    throw new Error('🤷‍♂️')
+                }
+
+            }
         }
 
-        app.config.globalProperties.$getOwner = async () => {
-            const parametrs = {
-                access_token: options,
-                // user_ids: 73289378,
-                // fields: 'photo_200_orig'
-            }
-            let response = await request('account.getProfileInfo', parametrs)
-            
-            parametrs.id = response.id
-            parametrs.fields = 'photo_200_orig'
-
-            response = await request('users.get', parametrs)
-
-            
-
-            return ({
-                id: response[0].id,
-                name: response[0].first_name,
-                lastName: response[0].last_name,
-                photo: response[0].photo_200_orig
-            })
-        }
+        app.config.globalProperties.$authorizationLink = 'https://oauth.vk.com/authorize?' + objToURLParam({
+            client_id: 7636014,
+            redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
+            display: 'popup',
+            scope: 'friends',
+            response_type: 'token',
+        })
     }
 }
 
-Object.prototype.toStringURLParameters = function () {
-    const keys = Object.keys(this)
-    return keys.map(key => `${key}=${typeof this[key] == 'object' ? this[key].join() : this[key]}`).join('&')
-}
+let access_token = '47f1947732266b85f3aad991de80c5315b3a7866f6fafab177bcc8a3f4adb383167ff988f61ea95f17d14'
 
+function objToURLParam(obj) {
+    const keys = Object.keys(obj)
+    return keys.map(key => `${key}=${typeof obj[key] == 'object' ? obj[key].join() : obj[key]}`).join('&')
+}
 
 const request = (function () {
     let counter = 0
     return async function (method = '', parametrs = {}) {
         const id = counter++
 
-        parametrs['v'] = 5.52
-        parametrs['callback'] = 'response' + id
+        parametrs.v = 5.52
+        parametrs.callback = 'response' + id
+        parametrs.access_token = access_token
 
-        const src = `https://api.vk.com/method/${method}?${parametrs.toStringURLParameters()}`
+        const src = `https://api.vk.com/method/${method}?${objToURLParam(parametrs)}`
 
         return new Promise((resolve, reject) => {
             window['response' + id] = function (data) {
-                if (data.error)
-                    reject(new Error(data.error.msg_error))
-                else
-                    resolve(data.response)
 
+                if (data.response) {
+                    resolve(data.response)
+                } else if (data.error) {
+                    reject(data.error)
+                } else {
+                    throw new Error('🤷‍♂️')
+                }
+
+                clearTimeout(timeOutError)
                 delete window['response' + id]
                 script.remove()
             }
@@ -69,39 +81,59 @@ const request = (function () {
             script.src = src
             document.head.appendChild(script)
 
-            script.onerror = () => { reject(new Error('access error')) }
+            const timeOutError = setTimeout(() => { throw new Error('time out') }, 2000)
+
+            script.onerror = () => { throw new Error('acces error') }
         })
     }
 })()
 
-// async function getFiveRandomFriends(access_token) {
-//     const parametrs = {
-//         access_token,
-//         count: 5,
-//         order: 'random',
-//         offset: 0,
-//         fields: ['photo_50'],
-//     }
+async function getOwner() {
+    let response = await request('account.getProfileInfo')
+    response = await request('users.get', { id: response.id, fields: 'photo_200_orig' })
+    return {
+        id: response[0].id,
+        name: response[0].first_name,
+        lastName: response[0].last_name,
+        photo: response[0].photo_200_orig
+    }
+}
 
-//     let response = await request('friends.get', parametrs)
-//     return response.items
-// }
+async function getFriends() {
+    const parametrs = {
+        count: 5,
+        order: 'random',
+        offset: 0,
+        fields: ['photo_200_orig'],
+    }
 
-// let access_token = document.location.hash.slice(1).split('&').map(i => i.split('=')).find(([key, _]) => key === 'access_token')
+    const itemHandler = (friends, user) => {
+        if (!(user.deactivated || friends[user.id])) {
+            friends[user.id] = {
+                name: user.first_name,
+                lastName: user.last_name,
+                photo: user.photo_200_orig
+            }
+        }
+        return friends
+    }
 
+    const { count, items } = await request('friends.get', parametrs)
+    const friends = items.reduce(itemHandler, {})
+    parametrs.order = 'hints'
 
-// if (access_token) {
-//     getFiveRandomFriends(access_token[1]).then(friends => console.log(friends))
-// } else {
-//     const authorizationParametr = {
-//         client_id: 7636014,
-//         redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
-//         display: 'popup',
-//         scope: 'friends',
-//         response_type: 'token',
-//     }
-//     window.location.replace('https://oauth.vk.com/authorize?' + authorizationParametr.toStringURLParameters())
-// }
+    for (let offset = 0; (offset < count) && (Object.keys(friends).length < 5); offset += parametrs.count) {
+        parametrs.offset = offset
+        parametrs.count = 5 - Object.keys(friends).length
+        const { items } = await request('friends.get', parametrs)
+        items.reduce(itemHandler, friends)
+    }
 
+    return Object.keys(friends).map(id => Object.assign({ id }, friends[id]))
+}
+
+async function getUsers() {
+    return [await getOwner(), ... (await getFriends())]
+}
 
 
