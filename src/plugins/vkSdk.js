@@ -98,7 +98,7 @@ export default {
                 
                 return await getUsers()
             } catch (error) {
-                console.log(error)
+                console.log(error, access_token)
                 if (error.error_code == 5) {
                     if ((access_token = document.location.hash
                         .slice(1)
@@ -108,6 +108,7 @@ export default {
                         (access_token = access_token[1]) &&
                         (friends = await getUsers())
                     ) {
+                        console.log('access_token hash:', access_token)
                         localStorage.setItem('access_token', access_token)
                         return friends
                     }
