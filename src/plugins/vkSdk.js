@@ -1,6 +1,6 @@
 export default {
     install: (app, options) => {
-        let access_token
+        let access_token, friends
 
         function objToURLParam(obj) {
             const keys = Object.keys(obj)
