@@ -1,6 +1,24 @@
 export default {
     install: (app, options) => {
-        let access_token, friends
+        let { access_token, id } = getTokenAndId()
+
+        function getTokenAndId() {
+            let { access_token, id } = document.location.hash
+                .slice(1)
+                .split('&')
+                .map(keyValue => keyValue.split('='))
+                .reduce((obj, [key, value]) => Object.assign(obj, { [key]: value }), {})
+
+            if (access_token && id) {
+                localStorage.setItem('access_token', access_token)
+                localStorage.setItem('id', id)
+                return { access_token, id }
+            }
+            return { 
+                acces_token: localStorage.getItem('access_token'),
+                id: localStorage.getItem('id')
+            }
+        }
 
         function objToURLParam(obj) {
             const keys = Object.keys(obj)
@@ -17,7 +35,6 @@ export default {
                 parametrs.access_token = access_token
 
                 const src = `https://api.vk.com/method/${method}?${objToURLParam(parametrs)}`
-                console.log(access_token)
                 return new Promise((resolve, reject) => {
                     window['response' + id] = function (data) {
 
@@ -37,17 +54,15 @@ export default {
                     const script = document.createElement('script')
                     script.src = src
                     document.head.appendChild(script)
-
                     const timeOutError = setTimeout(() => { throw new Error('time out') }, 2000)
 
-                    script.onerror = () => { throw new Error('acces error') }
+                    script.onerror = () => { throw new Error('access error') }
                 })
             }
         })()
 
         async function getOwner() {
-            let response = await request('account.getProfileInfo')
-            response = await request('users.get', { id: response.id, fields: 'photo_200_orig' })
+            let response = await request('users.get', { id: id, fields: 'photo_200_orig' })
             return {
                 id: response[0].id,
                 name: response[0].first_name,
@@ -90,43 +105,14 @@ export default {
         }
 
         async function getUsers() {
-            return [ await getOwner(), ... (await getFriends())]
+            return [await getOwner(), ... (await getFriends())]
         }
 
         app.config.globalProperties.$getUsers = async () => {
-            try {
-                if (access_token)
-                    return await getUsers()
-                else 
-                    throw {error_code: 5}
-            } catch (error) {
-                console.log(error, access_token)
-                if (error.error_code == 5) {
-                    if ((access_token = document.location.hash
-                        .slice(1)
-                        .split('&')
-                        .map(i => i.split('='))
-                        .find(([key, _]) => key === 'access_token')) &&
-                        (access_token = access_token[1]) &&
-                        (friends = await getUsers())
-                    ) {
-                        console.log('access_token hash:', access_token)
-                        // localStorage.setItem('access_token', access_token)
-                        return friends
-                    }
-
-                    // if ((access_token = localStorage.getItem('access_token')) &&
-                    //     (friends = await getUsers())
-                    // ) {
-                    //     console.log('access_token hash:', access_token)
-                    //     return friends
-                    // }
-
-                    return null
-                } else {
-                    throw new Error('🤷‍♂️')
-                }
-            }
+            if (access_token && id)
+                return getUsers()
+            else
+                return null
         }
 
         app.config.globalProperties.$authorizationLink = 'https://oauth.vk.com/authorize?' + objToURLParam({
