@@ -125,16 +125,15 @@ export default {
             }
         }
 
-        app.config.globalProperties.$authorizationLink = 'еу'
-        // 'https://oauth.vk.com/authorize?' + objToURLParam({
-        //     client_id: 7636014,
-        //     redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
-        //     display: 'popup',
-        //     scope: 'friends',
-        //     response_type: 'token',
-        //     v: 5.52,
-        //     revoke: 1
-        // })
+        app.config.globalProperties.$authorizationLink = 'https://oauth.vk.com/authorize?' + objToURLParam({
+            client_id: 7636014,
+            redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
+            display: 'popup',
+            scope: 'friends',
+            response_type: 'token',
+            v: 5.52,
+            revoke: 1
+        })
     }
 }
 
