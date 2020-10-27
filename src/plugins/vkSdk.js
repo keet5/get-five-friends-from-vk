@@ -1,22 +1,22 @@
 export default {
     install: (app, options) => {
-        let { access_token, id } = getTokenAndId()
+        let { access_token, user_id } = getTokenAndId()
 
         function getTokenAndId() {
-            let { access_token, id } = document.location.hash
+            let { access_token, user_id } = document.location.hash
                 .slice(1)
                 .split('&')
                 .map(keyValue => keyValue.split('='))
                 .reduce((obj, [key, value]) => Object.assign(obj, { [key]: value }), {})
 
-            if (access_token && id) {
+            if (access_token && user_id) {
                 localStorage.setItem('access_token', access_token)
-                localStorage.setItem('id', id)
-                return { access_token, id }
+                localStorage.setItem('user_id', user_id)
+                return { access_token, user_id }
             }
             return { 
                 acces_token: localStorage.getItem('access_token'),
-                id: localStorage.getItem('id')
+                user_id: localStorage.getItem('user_id')
             }
         }
 
@@ -62,9 +62,9 @@ export default {
         })()
 
         async function getOwner() {
-            let response = await request('users.get', { id: id, fields: 'photo_200_orig' })
+            let response = await request('users.get', { id: user_id, fields: 'photo_200_orig' })
             return {
-                id: response[0].id,
+                id: user_id,
                 name: response[0].first_name,
                 lastName: response[0].last_name,
                 photo: response[0].photo_200_orig
@@ -109,7 +109,7 @@ export default {
         }
 
         app.config.globalProperties.$getUsers = async () => {
-            if (access_token && id)
+            if (access_token && user_id)
                 return getUsers()
             else
                 return null
