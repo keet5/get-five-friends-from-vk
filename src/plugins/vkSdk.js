@@ -1,6 +1,7 @@
 export default {
     install: (app, options) => {
         let { access_token, user_id } = getTokenAndId()
+        console.log(access_token, user_id)
 
         function getTokenAndId() {
             let { access_token, user_id } = document.location.hash
@@ -14,10 +15,10 @@ export default {
                 localStorage.setItem('user_id', user_id)
                 return { access_token, user_id }
             }
-            return { 
-                acces_token: localStorage.getItem('access_token'),
+            return ({ 
+                access_token: localStorage.getItem('access_token'),
                 user_id: localStorage.getItem('user_id')
-            }
+            })
         }
 
         function objToURLParam(obj) {
