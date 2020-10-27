@@ -34,7 +34,7 @@ export default {
                 parametrs.callback = 'response' + id
                 parametrs.access_token = access_token
 
-                const src = `https://api.vk.com/method/${method}?${objToURLParam(parametrs)}`
+                const src = `https://api.vk.com/method/${method}?${new URLSearchParams(parametrs).toString()}`
                 return new Promise((resolve, reject) => {
                     window['response' + id] = function (data) {
                         clearTimeout(timeOutError)
@@ -48,8 +48,6 @@ export default {
                         } else {
                             throw new Error('¯\\_(ツ)_/¯')
                         }
-
-                       
                     }
 
                     const script = document.createElement('script')
@@ -107,7 +105,7 @@ export default {
 
         async function getUsers() {
             try {
-                return [ await getOwner(), ...await getFriends()]
+                return [await getOwner(), ...await getFriends()]
             } catch (error) {
                 localStorage.clear()
                 return null
@@ -121,13 +119,22 @@ export default {
                 return null
         }
 
-        app.config.globalProperties.$authorizationLink = 'https://oauth.vk.com/authorize?' + objToURLParam({
+        // app.config.globalProperties.$authorizationLink = 'https://oauth.vk.com/authorize?' + objToURLParam({
+        //     client_id: 7636014,
+        //     redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
+        //     display: 'popup',
+        //     scope: 'friends',
+        //     response_type: 'token',
+        //     v: 5.52
+        // })
+
+        app.config.globalProperties.$authorizationLink = 'https://oauth.vk.com/authorize?' + new URLSearchParams({
             client_id: 7636014,
             redirect_uri: 'https://keet5.github.io/show-five-friends-from-vk/',
             display: 'popup',
             scope: 'friends',
             response_type: 'token',
             v: 5.52
-        })
+        }).toString()
     }
 }
