@@ -1,7 +1,6 @@
 export default {
     install: (app, options) => {
         let { access_token, user_id } = getTokenAndId()
-        console.log(access_token, user_id)
 
         function getTokenAndId() {
             let { access_token, user_id } = document.location.hash
@@ -15,7 +14,7 @@ export default {
                 localStorage.setItem('user_id', user_id)
                 return { access_token, user_id }
             }
-            return ({ 
+            return ({
                 access_token: localStorage.getItem('access_token'),
                 user_id: localStorage.getItem('user_id')
             })
@@ -38,16 +37,19 @@ export default {
                 const src = `https://api.vk.com/method/${method}?${objToURLParam(parametrs)}`
                 return new Promise((resolve, reject) => {
                     window['response' + id] = function (data) {
-
-                        if (data.response) {
-                            resolve(data.response)
-                        } else if (data.error) {
-                            reject(data.error)
-                        }
-
                         clearTimeout(timeOutError)
                         delete window['response' + id]
                         script.remove()
+
+                        if (data.response) {
+                            resolve(data.response)
+                        } else if (data.error.error_code == 5) {
+                            reject(data.error)
+                        } else {
+                            throw new Error('¯\\_(ツ)_/¯')
+                        }
+
+                       
                     }
 
                     const script = document.createElement('script')
@@ -104,7 +106,12 @@ export default {
         }
 
         async function getUsers() {
-            return [await getOwner(), ... (await getFriends())]
+            try {
+                return [ await getOwner(), ...await getFriends()]
+            } catch (error) {
+                localStorage.clear()
+                return null
+            }
         }
 
         app.config.globalProperties.$getUsers = async () => {
